@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:E_Commerce.ViewModels"
+             x:Class="E_Commerce.Views.LoginPage"
+             BackgroundColor="{StaticResource Background}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <vm:LoginViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <StackLayout Padding="28" Spacing="0" VerticalOptions="Center">
+
+            <!-- Logo / Brand -->
+            <Frame CornerRadius="30" WidthRequest="70" HeightRequest="70" Padding="0"
+                   HasShadow="False" BackgroundColor="{StaticResource Primary}"
+                   HorizontalOptions="Center" Margin="0,0,0,16">
+                <Label Text="🛍️" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Frame>
+
+            <Label Text="ShopEase" FontSize="28" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" />
+            <Label Text="Sign in to continue shopping" FontSize="14"
+                   TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"
+                   Margin="0,6,0,32" />
+
+            <!-- Error Message -->
+            <Frame CornerRadius="12" Padding="14,10" HasShadow="False"
+                   BackgroundColor="#FEF2F2" BorderColor="#FECACA"
+                   IsVisible="{Binding HasError}" Margin="0,0,0,16">
+                <Label Text="{Binding ErrorMessage}" TextColor="#DC2626" FontSize="13" />
+            </Frame>
+
+            <!-- Email -->
+            <Label Text="Email Address" FontSize="13" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}" Margin="4,0,0,8" />
+            <Frame CornerRadius="14" HasShadow="False" Padding="16,0"
+                   HeightRequest="52" BackgroundColor="{StaticResource CardBackground}"
+                   BorderColor="{StaticResource Gray200}">
+                <Entry Placeholder="your@email.com"
+                       PlaceholderColor="{StaticResource TextLight}"
+                       TextColor="{StaticResource TextPrimary}"
+                       Keyboard="Email" FontSize="15"
+                       Text="{Binding Email}"
+                       VerticalOptions="Center" />
+            </Frame>
+
+            <!-- Password -->
+            <Label Text="Password" FontSize="13" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}" Margin="4,20,0,8" />
+            <Frame CornerRadius="14" HasShadow="False" Padding="16,0"
+                   HeightRequest="52" BackgroundColor="{StaticResource CardBackground}"
+                   BorderColor="{StaticResource Gray200}">
+                <Entry Placeholder="Enter password"
+                       PlaceholderColor="{StaticResource TextLight}"
+                       TextColor="{StaticResource TextPrimary}"
+                       IsPassword="True" FontSize="15"
+                       Text="{Binding Password}"
+                       VerticalOptions="Center" />
+            </Frame>
+
+            <!-- Forgot Password -->
+            <Label Text="Forgot Password?" FontSize="13"
+                   TextColor="{StaticResource Primary}" FontAttributes="Bold"
+                   HorizontalOptions="End" Margin="0,12,4,0" />
+
+            <!-- Login Button -->
+            <Button Text="Sign In"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White" FontAttributes="Bold" FontSize="16"
+                    CornerRadius="14" HeightRequest="54" Margin="0,28,0,0"
+                    Command="{Binding LoginCommand}" />
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Primary}" Margin="0,12,0,0" />
+
+            <!-- Divider -->
+            <Grid ColumnDefinitions="*, Auto, *" Margin="0,24">
+                <BoxView Grid.Column="0" HeightRequest="1" Color="{StaticResource Gray200}" VerticalOptions="Center" />
+                <Label Grid.Column="1" Text="  or  " FontSize="13" TextColor="{StaticResource TextLight}" />
+                <BoxView Grid.Column="2" HeightRequest="1" Color="{StaticResource Gray200}" VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Social Login Buttons -->
+            <Frame CornerRadius="14" HasShadow="False" Padding="0"
+                   HeightRequest="52" BackgroundColor="{StaticResource CardBackground}"
+                   BorderColor="{StaticResource Gray200}">
+                <Label Text="Continue with Google" FontSize="14"
+                       TextColor="{StaticResource TextPrimary}" FontAttributes="Bold"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Frame>
+
+            <!-- Sign Up Link -->
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,24,0,0">
+                <Label Text="Don't have an account? " FontSize="14"
+                       TextColor="{StaticResource TextSecondary}" />
+                <Label Text="Sign Up" FontSize="14" FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}" />
+            </StackLayout>
+
+            <!-- Demo Credentials -->
+            <Frame CornerRadius="12" Padding="14,10" HasShadow="False"
+                   BackgroundColor="{StaticResource SecondaryBackground}"
+                   Margin="0,20,0,0">
+                <StackLayout Spacing="4">
+                    <Label Text="Demo Credentials:" FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource TextSecondary}" />
+                    <Label Text="ammar@email.com / 123456" FontSize="12"
+                           TextColor="{StaticResource TextLight}" />
+                </StackLayout>
+            </Frame>
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,15 @@
+## .NET MAUI
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.bak
+*.log
+.vs/
+*.csproj.user
+packages/
+TestResults/
+*.nupkg
+.DS_Store
+Thumbs.db

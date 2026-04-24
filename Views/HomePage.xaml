@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:E_Commerce.ViewModels"
+             xmlns:models="clr-namespace:E_Commerce.Models"
+             x:Class="E_Commerce.Views.HomePage"
+             BackgroundColor="{StaticResource Background}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <vm:HomeViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <StackLayout Spacing="0">
+
+            <!-- Premium Header -->
+            <Grid Padding="20,20,20,10" ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                <!-- User Info -->
+                <StackLayout Grid.Row="0" VerticalOptions="Center">
+                    <Label Text="{Binding UserName, StringFormat='Hello, {0}'}" 
+                           FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                    <Label Text="Discover New Style" 
+                           FontSize="24" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" 
+                           Margin="0,2,0,0" />
+                </StackLayout>
+
+                <!-- Actions -->
+                <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalOptions="Start" Margin="0,5,0,0">
+                    <Button Text="🛒" 
+                            FontSize="18"
+                            WidthRequest="48" 
+                            HeightRequest="48"
+                            CornerRadius="24"
+                            Padding="0"
+                            BackgroundColor="{StaticResource SecondaryBackground}"
+                            TextColor="{StaticResource TextPrimary}"
+                            Command="{Binding NavigateToCartCommand}" />
+                    <Button Text="🔔" 
+                            FontSize="18"
+                            WidthRequest="48" 
+                            HeightRequest="48"
+                            CornerRadius="24"
+                            Padding="0"
+                            BackgroundColor="{StaticResource SecondaryBackground}"
+                            TextColor="{StaticResource TextPrimary}" />
+                </StackLayout>
+
+                <!-- Search & Filter Bar -->
+                <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,20,0,0" ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                    <Frame CornerRadius="16" HasShadow="False" BorderColor="{StaticResource Gray200}" 
+                           Padding="16,0" HeightRequest="56" BackgroundColor="{StaticResource CardBackground}">
+                        <Grid ColumnDefinitions="Auto, *">
+                            <Label Text="🔍" FontSize="18" VerticalOptions="Center" Margin="0,0,12,0" />
+                            <Entry Grid.Column="1"
+                                   Placeholder="Search your style..."
+                                   PlaceholderColor="{StaticResource TextLight}"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   FontSize="15"
+                                   VerticalOptions="Center"
+                                   Text="{Binding SearchTerm}" />
+                        </Grid>
+                    </Frame>
+                    <Button Grid.Column="1"
+                            Text="🔘" 
+                            FontSize="20"
+                            WidthRequest="56" 
+                            HeightRequest="56"
+                            CornerRadius="16"
+                            Padding="0"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            Command="{Binding ToggleCategoriesCommand}" />
+                </Grid>
+            </Grid>
+
+            <!-- Promo Banner -->
+            <Frame Margin="20,0" CornerRadius="18" HasShadow="True" Padding="0" HeightRequest="140"
+                   BackgroundColor="{StaticResource Primary}">
+                <Grid>
+                    <StackLayout HorizontalOptions="Start" VerticalOptions="Center" Padding="20" Spacing="6">
+                        <Label Text="SUMMER COLLECTION" FontSize="10" TextColor="{StaticResource PrimaryLight}"
+                               CharacterSpacing="1.5" FontAttributes="Bold" />
+                        <Label Text="Up to 50% Off" FontSize="22" FontAttributes="Bold" TextColor="White" />
+                        <Frame CornerRadius="16" Padding="12,6" HasShadow="False"
+                               BackgroundColor="White" HorizontalOptions="Start" Margin="0,2,0,0">
+                            <Label Text="Shop Now →" TextColor="{StaticResource Primary}"
+                                   FontAttributes="Bold" FontSize="12" />
+                        </Frame>
+                    </StackLayout>
+                </Grid>
+            </Frame>
+
+            <!-- Categories -->
+            <Label Text="Categories" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
+                   Margin="20,18,20,10" IsVisible="{Binding ShowCategories}" />
+            <CollectionView ItemsSource="{Binding Categories}" HeightRequest="44" Margin="14,0" IsVisible="{Binding ShowCategories}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Category">
+                        <Frame CornerRadius="14" Padding="14,8" HasShadow="False" BorderColor="Transparent">
+                            <Frame.Style>
+                                <Style TargetType="Frame">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource CardBackground}" />
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Frame" Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Frame.Style>
+                            <StackLayout Orientation="Horizontal" Spacing="5">
+                                <Label Text="{Binding Icon}" FontSize="14" VerticalOptions="Center" />
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="12" VerticalOptions="Center">
+                                    <Label.Style>
+                                        <Style TargetType="Label">
+                                            <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="TextColor" Value="White" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
+                            </StackLayout>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelectCategoryCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Products Header -->
+            <Grid Margin="20,16,20,8" ColumnDefinitions="*, Auto">
+                <Label Text="Popular" FontSize="16" FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                <Label Grid.Column="1" Text="See All →" TextColor="{StaticResource Primary}"
+                       FontAttributes="Bold" FontSize="12" VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Products Grid -->
+            <CollectionView ItemsSource="{Binding Products}" Margin="12,0" VerticalOptions="FillAndExpand">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="2"
+                                     HorizontalItemSpacing="10" VerticalItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Product">
+                        <Frame CornerRadius="16" Padding="0" HasShadow="True"
+                               BackgroundColor="{StaticResource CardBackground}" BorderColor="Transparent">
+                            <Grid RowDefinitions="140, Auto">
+                                <!-- Image -->
+                                <Grid Grid.Row="0">
+                                    <Frame CornerRadius="16" Padding="0" HasShadow="False"
+                                           BackgroundColor="{StaticResource SecondaryBackground}">
+                                        <Image Source="{Binding Image}" Aspect="AspectFill" />
+                                    </Frame>
+                                    <Frame CornerRadius="6" Padding="6,3" HasShadow="False"
+                                           BackgroundColor="{StaticResource Accent}"
+                                           HorizontalOptions="Start" VerticalOptions="Start"
+                                           Margin="8" IsVisible="{Binding HasDiscount}">
+                                        <Label Text="{Binding DiscountPercent}" FontSize="10"
+                                               FontAttributes="Bold" TextColor="White" />
+                                    </Frame>
+                                </Grid>
+                                <!-- Info -->
+                                <StackLayout Grid.Row="1" Padding="10,8" Spacing="3">
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="13"
+                                           MaxLines="1" LineBreakMode="TailTruncation"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                    <StackLayout Orientation="Horizontal" Spacing="3">
+                                        <Label Text="⭐" FontSize="10" VerticalOptions="Center" />
+                                        <Label Text="{Binding Rating}" FontSize="11" FontAttributes="Bold"
+                                               TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                                        <Label Text="{Binding ReviewCount, StringFormat='({0})'}" FontSize="10"
+                                               TextColor="{StaticResource TextLight}" VerticalOptions="Center" />
+                                    </StackLayout>
+                                    <Label Text="{Binding Price, StringFormat='${0:F2}'}"
+                                           TextColor="{StaticResource Primary}" FontAttributes="Bold" FontSize="15" />
+                                </StackLayout>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=ProductSelectedCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <BoxView HeightRequest="16" Color="Transparent" />
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>
