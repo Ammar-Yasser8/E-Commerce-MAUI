@@ -1,8 +1,6 @@
 # 🛍️ ShopEase — .NET MAUI E-Commerce Application
 
-A premium cross-platform mobile e-commerce application built with **.NET MAUI** using the **MVVM** architecture pattern.
-
-![Architecture](docs/screenshots/architecture_diagram.png)
+A premium cross-platform mobile e-commerce application built with **.NET MAUI** using the **MVVM** architecture pattern. All data is **local mock data** — no external APIs or backend required.
 
 ---
 
@@ -25,16 +23,41 @@ A premium cross-platform mobile e-commerce application built with **.NET MAUI** 
 
 ## 🏗 Architecture Overview
 
-The app follows the **Model-View-ViewModel (MVVM)** pattern with four distinct layers:
+The app follows the **Model-View-ViewModel (MVVM)** pattern with local mock data (no APIs):
+
+```
+┌─────────────────────────────────────────────────────┐
+│                    VIEWS (XAML)                      │
+│  LoginPage │ HomePage │ ProductDetailsPage │ CartPage│
+└──────┬──────────┬──────────────┬──────────────┬──────┘
+       │          │              │              │
+   Data Binding (INotifyPropertyChanged)
+       │          │              │              │
+┌──────▼──────────▼──────────────▼──────────────▼──────┐
+│                 VIEWMODELS (C#)                      │
+│  LoginVM  │  HomeVM  │ ProductDetailsVM │  CartVM    │
+└──────┬──────────┬──────────────┬──────────────┬──────┘
+       │          │              │              │
+┌──────▼──────────▼──────────────▼──────────────▼──────┐
+│            SERVICES (Static / Mock Data)             │
+│         AuthService          CartService             │
+│     (hardcoded users)    (ObservableCollection)      │
+└──────┬──────────┬──────────────┬──────────────┬──────┘
+       │          │              │              │
+┌──────▼──────────▼──────────────▼──────────────▼──────┐
+│                   MODELS (C#)                        │
+│      User  │  Product  │  Category  │  CartItem      │
+└─────────────────────────────────────────────────────┘
+```
 
 | Layer | Responsibility | Files |
 |-------|---------------|-------|
 | **Views** | UI layout using XAML | `LoginPage`, `HomePage`, `ProductDetailsPage`, `CartPage` |
 | **ViewModels** | Presentation logic & data binding | `LoginViewModel`, `HomeViewModel`, `ProductDetailsViewModel`, `CartViewModel` |
 | **Models** | Data entities | `User`, `Product`, `Category`, `CartItem` |
-| **Services** | Business logic & state management | `AuthService`, `CartService` |
+| **Services** | Local mock data & state management | `AuthService` (hardcoded users), `CartService` (in-memory cart) |
 
-**Data flow:** `View` ← (bindings) → `ViewModel` → `Service` → `Model`
+**Data flow:** `View` ← (bindings) → `ViewModel` → `Service (local mock)` → `Model`
 
 ---
 
