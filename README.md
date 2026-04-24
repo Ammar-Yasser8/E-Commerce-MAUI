@@ -405,7 +405,7 @@ App.xaml.cs
 ### Steps
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/Ammar-Yasser8/E-Commerce-MAUI.git
 
 # Navigate to project
 cd E-Commerce
