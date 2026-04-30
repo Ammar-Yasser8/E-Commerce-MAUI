@@ -10,6 +10,13 @@
     "WSL": {
       "commandName": "WSL2",
       "distributionName": ""
+    },
+    "Profile 1": {
+      "commandName": "Project",
+      "nativeDebugging": false,
+      "remoteDebugEnabled": true,
+      "remoteDebugMachine": "Poco m5",
+      "authenticationMode": "None"
     }
   }
 }

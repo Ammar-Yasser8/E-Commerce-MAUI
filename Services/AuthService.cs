@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using E_Commerce.Models;
+using E_Commerce.Models.Api;
 
 namespace E_Commerce.Services;
 
@@ -29,6 +30,18 @@ public static class AuthService
             return true;
         }
         return false;
+    }
+
+    public static void SetCurrentUser(UserDto dto)
+    {
+        CurrentUser = new User
+        {
+            FullName = dto.DisplayName,
+            Email = dto.Email,
+            Token = dto.Token,
+            Role = dto.Role,
+            Avatar = "👤"
+        };
     }
 
     public static void Logout()

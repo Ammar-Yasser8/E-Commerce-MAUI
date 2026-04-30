@@ -6,10 +6,6 @@
              BackgroundColor="{StaticResource Background}"
              Shell.NavBarIsVisible="False">
 
-    <ContentPage.BindingContext>
-        <vm:LoginViewModel />
-    </ContentPage.BindingContext>
-
     <ScrollView>
         <StackLayout Padding="28" Spacing="0" VerticalOptions="Center">
 

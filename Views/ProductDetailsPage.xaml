@@ -7,10 +7,6 @@
              Shell.NavBarIsVisible="True"
              Title="Product Details">
 
-    <ContentPage.BindingContext>
-        <vm:ProductDetailsViewModel />
-    </ContentPage.BindingContext>
-
     <Grid RowDefinitions="*, Auto">
 
         <ScrollView Grid.Row="0">
@@ -113,6 +109,17 @@
                         TextColor="White" FontAttributes="Bold" FontSize="16"
                         CornerRadius="16" HeightRequest="56"
                         Command="{Binding AddToCartCommand}" />
+            </Grid>
+        </Frame>
+
+        <!-- Popup Notification -->
+        <Frame x:Name="CartPopup" Grid.RowSpan="2" CornerRadius="16" Margin="24,40,24,0" Padding="16"
+               BackgroundColor="#28A745" BorderColor="Transparent" HasShadow="True"
+               VerticalOptions="Start" HorizontalOptions="Center" IsVisible="False"
+               Opacity="0" HeightRequest="60" WidthRequest="300">
+            <Grid ColumnDefinitions="Auto, *">
+                <Label Text="✓" FontSize="20" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" Margin="0,0,12,0"/>
+                <Label Grid.Column="1" Text="Item added to cart!" FontSize="15" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
             </Grid>
         </Frame>
     </Grid>

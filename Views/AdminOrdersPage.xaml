@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:E_Commerce.ViewModels"
+             xmlns:models="clr-namespace:E_Commerce.Models.Api"
+             x:Class="E_Commerce.Views.AdminOrdersPage"
+             BackgroundColor="{StaticResource Background}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- Custom Header -->
+        <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Start">
+            <Button Text="←" 
+                    FontSize="20"
+                    WidthRequest="44" 
+                    HeightRequest="44"
+                    CornerRadius="22"
+                    Padding="0"
+                    BackgroundColor="{StaticResource SecondaryBackground}"
+                    TextColor="{StaticResource TextPrimary}"
+                    Command="{Binding GoBackCommand}" />
+            
+            <Label Grid.Column="1" Text="Orders Manager" FontSize="20" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" VerticalOptions="Center" />
+            
+            <BoxView Grid.Column="2" WidthRequest="44" Color="Transparent" />
+        </Grid>
+
+        <Grid Grid.Row="1" RowDefinitions="*, Auto">
+            <!-- Orders List -->
+            <CollectionView Grid.Row="0" ItemsSource="{Binding Orders}" Margin="20,10">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:OrderDto">
+                        <Frame CornerRadius="16" Padding="16" HasShadow="True"
+                               BackgroundColor="{StaticResource CardBackground}" BorderColor="Transparent">
+                            <StackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <Label Text="{Binding BuyerEmail, StringFormat='User: {0}'}" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                                    <Label Grid.Column="1" Text="{Binding Status}" FontSize="13" FontAttributes="Bold" VerticalOptions="Center">
+                                        <Label.Style>
+                                            <Style TargetType="Label">
+                                                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Delivered">
+                                                        <Setter Property="TextColor" Value="{StaticResource Success}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Pending">
+                                                        <Setter Property="TextColor" Value="{StaticResource Warning}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                </Grid>
+
+                                <Label Text="{Binding Total, StringFormat='Total Amount: ${0:F2}'}" FontSize="14" TextColor="{StaticResource Primary}" FontAttributes="Bold" />
+
+                                <Grid ColumnDefinitions="*, Auto" Margin="0,8,0,0">
+                                    <Label Text="{Binding OrderDate, StringFormat='Date: {0:MM/dd/yyyy}'}" FontSize="12" TextColor="{StaticResource TextLight}" VerticalOptions="Center" />
+                                    
+                                    <Button Grid.Column="1" Text="Update Status" FontSize="12"
+                                            Padding="12,6" HeightRequest="36" CornerRadius="10"
+                                            BackgroundColor="{StaticResource SecondaryBackground}"
+                                            TextColor="{StaticResource Primary}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminOrdersViewModel}}, Path=UpdateStatusCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+
+</ContentPage>

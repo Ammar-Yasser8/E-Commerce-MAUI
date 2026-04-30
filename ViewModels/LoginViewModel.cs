@@ -1,10 +1,13 @@
 using System.Windows.Input;
 using E_Commerce.Services;
 
+using E_Commerce.Models.Api;
+
 namespace E_Commerce.ViewModels;
 
 public class LoginViewModel : BaseViewModel
 {
+    private readonly ApiService _apiService;
     private string _email = string.Empty;
     public string Email
     {
@@ -35,8 +38,9 @@ public class LoginViewModel : BaseViewModel
 
     public ICommand LoginCommand { get; }
 
-    public LoginViewModel()
+    public LoginViewModel(ApiService apiService)
     {
+        _apiService = apiService;
         Title = "Login";
         LoginCommand = new Command(OnLogin);
     }
@@ -62,15 +66,14 @@ public class LoginViewModel : BaseViewModel
 
         IsBusy = true;
 
-        // Simulate network delay
-        await Task.Delay(800);
-
-        bool success = AuthService.Login(Email, Password);
+        var loginDto = new LoginDto { Email = Email, Password = Password };
+        var userDto = await _apiService.LoginAsync(loginDto);
 
         IsBusy = false;
 
-        if (success)
+        if (userDto != null)
         {
+            AuthService.SetCurrentUser(userDto);
             if (App.Current is App app)
             {
                 app.MainPage = new AppShell();
@@ -78,7 +81,7 @@ public class LoginViewModel : BaseViewModel
         }
         else
         {
-            ErrorMessage = "Invalid email or password. Try ammar@email.com / 123456";
+            ErrorMessage = "Invalid email or password.";
             HasError = true;
         }
     }

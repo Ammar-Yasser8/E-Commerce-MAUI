@@ -4,6 +4,7 @@ namespace E_Commerce.Models;
 
 public class Category : BaseViewModel
 {
+    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
     private bool _isSelected;

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:E_Commerce.ViewModels"
+             x:Class="E_Commerce.Views.ProductEditPage"
+             BackgroundColor="{StaticResource Background}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- Custom Header -->
+        <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Start">
+            <Button Text="←" 
+                    FontSize="20"
+                    WidthRequest="44" 
+                    HeightRequest="44"
+                    CornerRadius="22"
+                    Padding="0"
+                    BackgroundColor="{StaticResource SecondaryBackground}"
+                    TextColor="{StaticResource TextPrimary}"
+                    Command="{Binding GoBackCommand}" />
+            
+            <Label Grid.Column="1" Text="{Binding Title}" FontSize="20" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" VerticalOptions="Center" />
+            
+            <BoxView Grid.Column="2" WidthRequest="44" Color="Transparent" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <StackLayout Padding="20" Spacing="16">
+
+                <Label Text="Product Information" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+
+                <!-- Name -->
+                <StackLayout Spacing="6">
+                    <Label Text="Name" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                    <Frame CornerRadius="12" HasShadow="False" Padding="16,0" HeightRequest="50"
+                           BackgroundColor="{StaticResource SecondaryBackground}" BorderColor="Transparent">
+                        <Entry Text="{Binding Name}" Placeholder="Product Name" PlaceholderColor="{StaticResource TextLight}" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                    </Frame>
+                </StackLayout>
+
+                <!-- Description -->
+                <StackLayout Spacing="6">
+                    <Label Text="Description" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                    <Frame CornerRadius="12" HasShadow="False" Padding="16,8" HeightRequest="100"
+                           BackgroundColor="{StaticResource SecondaryBackground}" BorderColor="Transparent">
+                        <Editor Text="{Binding Description}" Placeholder="Enter product description..." PlaceholderColor="{StaticResource TextLight}" TextColor="{StaticResource TextPrimary}" />
+                    </Frame>
+                </StackLayout>
+
+                <!-- Price -->
+                <StackLayout Spacing="6">
+                    <Label Text="Price ($)" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                    <Frame CornerRadius="12" HasShadow="False" Padding="16,0" HeightRequest="50"
+                           BackgroundColor="{StaticResource SecondaryBackground}" BorderColor="Transparent">
+                        <Entry Text="{Binding Price}" Placeholder="0.00" Keyboard="Numeric" PlaceholderColor="{StaticResource TextLight}" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                    </Frame>
+                </StackLayout>
+
+                <!-- Picture Upload -->
+                <StackLayout Spacing="6">
+                    <Label Text="Product Image" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Frame CornerRadius="12" HasShadow="False" Padding="16,0" HeightRequest="50"
+                               BackgroundColor="{StaticResource SecondaryBackground}" BorderColor="Transparent">
+                            <Label Text="{Binding PictureUrl}" LineBreakMode="HeadTruncation" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                        </Frame>
+                        <Button Grid.Column="1" Text="Upload" Margin="10,0,0,0"
+                                Command="{Binding PickImageCommand}"
+                                BackgroundColor="{StaticResource Primary}" TextColor="White" CornerRadius="10" />
+                    </Grid>
+                </StackLayout>
+
+                <!-- Category Selection Dropdown -->
+                <StackLayout Spacing="6">
+                    <Label Text="Select Category" FontSize="14" TextColor="{StaticResource TextSecondary}" />
+                    <Frame CornerRadius="12" HasShadow="False" Padding="16,0" HeightRequest="50"
+                           BackgroundColor="{StaticResource SecondaryBackground}" BorderColor="Transparent">
+                        <Picker ItemsSource="{Binding CategoriesList}" 
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding SelectedCategory}"
+                                Title="Select a Category" 
+                                TextColor="{StaticResource TextPrimary}" 
+                                TitleColor="{StaticResource TextLight}" 
+                                VerticalOptions="Center" />
+                    </Frame>
+                </StackLayout>
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" HorizontalOptions="Center" Margin="0,10" />
+
+                <Button Text="Save Product"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" FontAttributes="Bold" FontSize="16"
+                        CornerRadius="12" HeightRequest="50" Margin="0,10,0,0"
+                        Command="{Binding SaveCommand}" />
+
+            </StackLayout>
+        </ScrollView>
+        <!-- Popup Notification -->
+        <Frame x:Name="NotifyPopup" Grid.RowSpan="2" CornerRadius="16" Margin="24,40,24,0" Padding="16"
+               BackgroundColor="#28A745" BorderColor="Transparent" HasShadow="True"
+               VerticalOptions="Start" HorizontalOptions="Center" IsVisible="False"
+               Opacity="0" HeightRequest="60" WidthRequest="300">
+            <Grid ColumnDefinitions="Auto, *">
+                <Label x:Name="NotifyIcon" Text="✓" FontSize="20" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" Margin="0,0,12,0"/>
+                <Label x:Name="NotifyText" Grid.Column="1" Text="Action Successful!" FontSize="15" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+            </Grid>
+        </Frame>
+    </Grid>
+
+</ContentPage>

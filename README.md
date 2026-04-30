@@ -1,6 +1,6 @@
 # 🛍️ ShopEase — .NET MAUI E-Commerce Application
 
-A premium cross-platform mobile e-commerce application built with **.NET MAUI** using the **MVVM** architecture pattern. All data is **local mock data** — no external APIs or backend required.
+A premium cross-platform mobile e-commerce application built with **.NET MAUI** using the **MVVM** architecture pattern. All data is securely integrated via live remote REST APIs.
 
 ---
 
@@ -47,7 +47,7 @@ The app follows the **Model-View-ViewModel (MVVM)** pattern with local mock data
 ┌──────▼──────────▼──────────────▼──────────────▼──────┐
 │                   MODELS (C#)                        │
 │      User  │  Product  │  Category  │  CartItem      │
-└─────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────-──┘
 ```
 
 | Layer | Responsibility | Files |
@@ -318,6 +318,50 @@ public ICommand GoBackCommand { get; }     // Shell.GoToAsync("..")
 
 ---
 
+### 5. Checkout Page
+
+![Checkout Screen](docs/screenshots/checkout_screen.png)
+
+**Files:** `Views/CheckoutPage.xaml` · `ViewModels/CheckoutViewModel.cs`
+
+#### ViewModel: `CheckoutViewModel.cs`
+```csharp
+public string CardNumber { get; set; }
+public string ExpiryDate { get; set; }
+public string Cvv { get; set; }
+public ICommand ProcessPaymentCommand { get; }
+```
+
+---
+
+### 6. Admin Dashboard
+
+![Admin Dashboard Screen](docs/screenshots/admin_dashboard.png)
+
+**Files:** `Views/AdminDashboardPage.xaml` · `ViewModels/AdminDashboardViewModel.cs`
+
+#### ViewModel: `AdminDashboardViewModel.cs`
+```csharp
+public ICommand NavigateToProductsCommand { get; }
+public ICommand NavigateToCategoriesCommand { get; }
+public ICommand NavigateToOrdersCommand { get; }
+```
+
+---
+
+### 7. Admin Products Manager
+
+**Files:** `Views/AdminProductsPage.xaml` · `ViewModels/AdminProductsViewModel.cs`
+
+#### ViewModel: `AdminProductsViewModel.cs`
+```csharp
+public ObservableCollection<ProductToReverseDto> Products { get; }
+public ICommand LoadMoreProductsCommand { get; }
+public ICommand DeleteProductCommand { get; }
+```
+
+---
+
 ## 📦 Models Documentation
 
 ### `User.cs`
@@ -393,28 +437,36 @@ CartService.CartItems;                // ObservableCollection<CartItem>
 
 ---
 
+## 🌐 Integrated API Endpoints
+
+All core models interact against remote services:
+* **Products**: `GET https://mauiapp.runasp.net/api/products`
+* **Orders Mapping**: `POST /api/Orders`
+* **Cart Synchronizer**: `POST /api/Basket`
+
+---
+
 ## 🔄 Navigation Flow
 
 ```
 App.xaml.cs
   └── LoginPage (initial window)
         │ (on successful login)
-        └── AppShell (TabBar)
-              ├── Tab: Home ──→ HomePage
-              │                    │ (tap product)
-              │                    └── ProductDetailsPage
-              │                          │ (Add to Cart)
-              │                          └── CartService.AddProduct()
-              └── Tab: Cart ──→ CartPage
-                                   │ (reads CartService.CartItems)
-                                   └── Checkout / GoBack
+        ├── AppShell (TabBar)
+        │     ├── Tab: Home ──→ HomePage ──→ ProductDetailsPage
+        │     └── Tab: Cart ──→ CartPage ──→ CheckoutPage
+        │
+        └── Admin Dashboard (Deep Link)
+              └── AdminDashboardPage
+                    ├── AdminProductsPage ──→ ProductEditPage
+                    ├── AdminCategoriesPage ──→ CategoryEditPage
+                    └── AdminOrdersPage
 ```
 
 **Key Navigation Methods:**
 - Login → Home: `app.MainPage = new AppShell()`
-- Home → Product: `Shell.Current.GoToAsync(ProductDetailsPage, params)`
-- Home → Cart: `Shell.Current.GoToAsync("//CartPage")`
-- Cart → Back: `Shell.Current.GoToAsync("..")`
+- Product Details: `Shell.Current.GoToAsync("ProductDetailsPage")`
+- Admin: `Shell.Current.GoToAsync("AdminDashboardPage")`
 
 ---
 
@@ -451,4 +503,4 @@ This project is developed for educational purposes as part of the Advanced Progr
 
 ---
 
-> **Built with ❤️ using .NET MAUI & MVVM Pattern**
+> **Built with Ammar Yasser using .NET MAUI & MVVM Pattern**

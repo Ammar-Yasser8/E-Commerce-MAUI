@@ -8,7 +8,8 @@ namespace E_Commerce.ViewModels;
 
 public class CartViewModel : BaseViewModel
 {
-    public ObservableCollection<CartItem> CartItems => CartService.CartItems;
+    private readonly CartService _cartService;
+    public ObservableCollection<CartItem> CartItems => _cartService.CartItems;
 
     private decimal _subtotal;
     public decimal Subtotal
@@ -51,8 +52,9 @@ public class CartViewModel : BaseViewModel
     public ICommand CheckoutCommand { get; }
     public ICommand GoBackCommand { get; }
 
-    public CartViewModel()
+    public CartViewModel(CartService cartService)
     {
+        _cartService = cartService;
         Title = "My Cart";
         
         // Subscribe to collection changes to update totals
@@ -72,26 +74,26 @@ public class CartViewModel : BaseViewModel
         await Shell.Current.GoToAsync("..");
     }
 
-    private void OnRemoveItem(CartItem item)
+    private async void OnRemoveItem(CartItem item)
     {
-        CartService.RemoveItem(item);
+        await _cartService.RemoveItemAsync(item);
         UpdateTotals();
     }
 
-    private void OnIncrease(CartItem item)
+    private async void OnIncrease(CartItem item)
     {
         if (item.Quantity < 10)
         {
-            item.Quantity++;
+            await _cartService.UpdateQuantityAsync(item, item.Quantity + 1);
             UpdateTotals();
         }
     }
 
-    private void OnDecrease(CartItem item)
+    private async void OnDecrease(CartItem item)
     {
         if (item.Quantity > 1)
         {
-            item.Quantity--;
+            await _cartService.UpdateQuantityAsync(item, item.Quantity - 1);
             UpdateTotals();
         }
         else
@@ -102,14 +104,7 @@ public class CartViewModel : BaseViewModel
 
     private async void OnCheckout()
     {
-        if (App.Current?.MainPage != null)
-            await App.Current.MainPage.DisplayAlert(
-                "Order Placed! 🎉",
-                $"Your order of {ItemCount} items totaling ${TotalAmount:F2} has been placed successfully!",
-                "OK");
-        
-        CartService.ClearCart();
-        UpdateTotals();
+        await Shell.Current.GoToAsync(nameof(E_Commerce.Views.CheckoutPage));
     }
 
     private void UpdateTotals()

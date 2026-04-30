@@ -29,6 +29,30 @@ namespace E_Commerce
             builder.Services.AddSingleton<CartViewModel>();
             builder.Services.AddSingleton<CartPage>();
 
+            builder.Services.AddTransient<CheckoutViewModel>();
+            builder.Services.AddTransient<CheckoutPage>();
+
+            builder.Services.AddTransient<AdminDashboardViewModel>();
+            builder.Services.AddTransient<AdminDashboardPage>();
+
+            builder.Services.AddTransient<AdminProductsViewModel>();
+            builder.Services.AddTransient<AdminProductsPage>();
+
+            builder.Services.AddTransient<AdminCategoriesViewModel>();
+            builder.Services.AddTransient<AdminCategoriesPage>();
+
+            builder.Services.AddTransient<AdminOrdersViewModel>();
+            builder.Services.AddTransient<AdminOrdersPage>();
+
+            builder.Services.AddTransient<ProductEditViewModel>();
+            builder.Services.AddTransient<ProductEditPage>();
+
+            builder.Services.AddTransient<CategoryEditViewModel>();
+            builder.Services.AddTransient<CategoryEditPage>();
+
+            builder.Services.AddSingleton<E_Commerce.Services.ApiService>();
+            builder.Services.AddSingleton<E_Commerce.Services.CartService>();
+
             #if DEBUG
     		builder.Logging.AddDebug();
             #endif

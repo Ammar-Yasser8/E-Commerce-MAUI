@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:E_Commerce.ViewModels"
+             xmlns:models="clr-namespace:E_Commerce.Models.Api"
+             x:Class="E_Commerce.Views.AdminCategoriesPage"
+             BackgroundColor="{StaticResource Background}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- Custom Header -->
+        <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Start">
+            <Button Text="←" 
+                    FontSize="20"
+                    WidthRequest="44" 
+                    HeightRequest="44"
+                    CornerRadius="22"
+                    Padding="0"
+                    BackgroundColor="{StaticResource SecondaryBackground}"
+                    TextColor="{StaticResource TextPrimary}"
+                    Command="{Binding GoBackCommand}" />
+            
+            <Label Grid.Column="1" Text="Categories Manager" FontSize="20" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" VerticalOptions="Center" />
+            
+            <BoxView Grid.Column="2" WidthRequest="44" Color="Transparent" />
+        </Grid>
+
+        <Grid Grid.Row="1" RowDefinitions="*, Auto">
+            <!-- Categories List -->
+            <CollectionView Grid.Row="0" ItemsSource="{Binding Categories}" Margin="20,10">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ProductCategory">
+                        <Frame CornerRadius="16" Padding="16" HasShadow="False"
+                               BackgroundColor="{StaticResource CardBackground}" BorderColor="Transparent">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="📂" FontSize="20" VerticalOptions="Center" />
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminCategoriesViewModel}}, Path=EditCategoryCommand}"
+                                                       CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Add Category Floating Button -->
+            <Button Grid.Row="0" Text="➕" FontSize="20"
+                    WidthRequest="56" HeightRequest="56" CornerRadius="28"
+                    BackgroundColor="{StaticResource Primary}" TextColor="White"
+                    HorizontalOptions="End" VerticalOptions="End" Margin="0,0,24,24"
+                    Command="{Binding CreateCategoryCommand}" />
+
+            <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+
+</ContentPage>

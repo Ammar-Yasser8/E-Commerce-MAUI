@@ -7,10 +7,6 @@
              BackgroundColor="{StaticResource Background}"
              Shell.NavBarIsVisible="False">
 
-    <ContentPage.BindingContext>
-        <vm:CartViewModel />
-    </ContentPage.BindingContext>
-
     <Grid RowDefinitions="Auto, *, Auto">
 
         <!-- Custom Header -->

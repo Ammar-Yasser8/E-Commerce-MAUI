@@ -7,6 +7,7 @@ namespace E_Commerce.ViewModels;
 [QueryProperty(nameof(Product), "Product")]
 public class ProductDetailsViewModel : BaseViewModel
 {
+    private readonly CartService _cartService;
     private Product _product = new();
     public Product Product
     {
@@ -29,8 +30,9 @@ public class ProductDetailsViewModel : BaseViewModel
     public ICommand IncreaseQuantityCommand { get; }
     public ICommand DecreaseQuantityCommand { get; }
 
-    public ProductDetailsViewModel()
+    public ProductDetailsViewModel(CartService cartService)
     {
+        _cartService = cartService;
         AddToCartCommand = new Command(OnAddToCart);
         IncreaseQuantityCommand = new Command(() => Quantity++);
         DecreaseQuantityCommand = new Command(() => Quantity--);
@@ -39,13 +41,9 @@ public class ProductDetailsViewModel : BaseViewModel
     private async void OnAddToCart()
     {
         // Actually add the product to the global cart service
-        CartService.AddProduct(Product, Quantity);
+        await _cartService.AddProductAsync(Product, Quantity);
 
-        if (App.Current?.MainPage != null)
-            await App.Current.MainPage.DisplayAlert(
-                "Added to Cart ✓",
-                $"{Quantity}x {Product.Name} added to your cart!",
-                "Continue Shopping");
+        MessagingCenter.Send(this, "ItemAddedToCart");
         
         // Optional: Navigate back or stay on page
         // await Shell.Current.GoToAsync("..");
