@@ -25,6 +25,12 @@ public class ApiService
         _baseUrl = "https://mauiapp.runasp.net/api/";
 
         _httpClient.BaseAddress = new Uri(_baseUrl);
+        
+        // Load persisted token if available
+        if (AuthService.CurrentUser != null && !string.IsNullOrEmpty(AuthService.CurrentUser.Token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthService.CurrentUser.Token);
+        }
     }
 
     // Account

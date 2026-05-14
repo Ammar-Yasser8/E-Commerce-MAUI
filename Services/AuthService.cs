@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json;
 using E_Commerce.Models;
 using E_Commerce.Models.Api;
 
@@ -7,30 +6,45 @@ namespace E_Commerce.Services;
 
 public static class AuthService
 {
-    private static readonly List<User> _users = new()
-    {
-        new User { Id = 1, FullName = "Ammar Yasser", Email = "ammar@email.com", Password = "123456", Avatar = "👤" },
-        new User { Id = 2, FullName = "Ahmed Mohamed", Email = "ahmed@email.com", Password = "123456", Avatar = "👤" },
-        new User { Id = 3, FullName = "Sara Ali", Email = "sara@email.com", Password = "123456", Avatar = "👤" },
-        new User { Id = 4, FullName = "Omar Hassan", Email = "omar@email.com", Password = "password", Avatar = "👤" },
-        new User { Id = 5, FullName = "Nour Ibrahim", Email = "nour@email.com", Password = "password", Avatar = "👤" },
-    };
+    private const string AuthKey = "auth_user";
+    private const string TokenKey = "auth_token";
 
-    public static User? CurrentUser { get; private set; }
-
-    public static bool Login(string email, string password)
-    {
-        var user = _users.FirstOrDefault(u =>
-            u.Email.Equals(email, System.StringComparison.OrdinalIgnoreCase) &&
-            u.Password == password);
-
-        if (user != null)
+    private static User? _currentUser;
+    public static User? CurrentUser 
+    { 
+        get
         {
-            CurrentUser = user;
-            return true;
+            if (_currentUser == null)
+            {
+                var userJson = Preferences.Get(AuthKey, string.Empty);
+                if (!string.IsNullOrEmpty(userJson))
+                {
+                    _currentUser = JsonSerializer.Deserialize<User>(userJson);
+                }
+            }
+            return _currentUser;
         }
-        return false;
+        private set
+        {
+            _currentUser = value;
+            if (value == null)
+            {
+                Preferences.Remove(AuthKey);
+                SecureStorage.Default.Remove(TokenKey);
+            }
+            else
+            {
+                var userJson = JsonSerializer.Serialize(value);
+                Preferences.Set(AuthKey, userJson);
+                if (!string.IsNullOrEmpty(value.Token))
+                {
+                    SecureStorage.Default.SetAsync(TokenKey, value.Token).Wait();
+                }
+            }
+        }
     }
+
+    public static bool IsLoggedIn => CurrentUser != null;
 
     public static void SetCurrentUser(UserDto dto)
     {
@@ -44,10 +58,13 @@ public static class AuthService
         };
     }
 
+    public static async Task<string?> GetTokenAsync()
+    {
+        return await SecureStorage.Default.GetAsync(TokenKey);
+    }
+
     public static void Logout()
     {
         CurrentUser = null;
     }
-
-    public static List<User> GetAllUsers() => _users;
 }
