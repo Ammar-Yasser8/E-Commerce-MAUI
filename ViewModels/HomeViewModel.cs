@@ -31,6 +31,7 @@ public class HomeViewModel : BaseViewModel
     public ICommand ProductSelectedCommand { get; }
     public ICommand ToggleCategoriesCommand { get; }
     public ICommand LoadMoreProductsCommand { get; }
+    public ICommand RefreshCommand { get; }
 
     private bool _showCategories = true;
     public bool ShowCategories
@@ -61,13 +62,12 @@ public class HomeViewModel : BaseViewModel
         ProductSelectedCommand = new Command<Product>(OnProductSelected);
         ToggleCategoriesCommand = new Command(ToggleCategories);
         LoadMoreProductsCommand = new Command(async () => await LoadMoreProductsAsync());
+        RefreshCommand = new Command(async () => await InitializeAsync());
         
         ShowCategories = true;
-
-        Task.Run(LoadDataAsync);
     }
 
-    private async Task LoadDataAsync()
+    public async Task InitializeAsync()
     {
         IsBusy = true;
 
