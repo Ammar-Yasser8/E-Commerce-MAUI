@@ -71,20 +71,40 @@ public class HomeViewModel : BaseViewModel
     {
         IsBusy = true;
 
+        // Remember the currently selected category ID to preserve it after reload
+        int selectedId = Categories.FirstOrDefault(c => c.IsSelected)?.Id ?? 0;
+
         var cats = await _apiService.GetCategoriesAsync();
+        
         MainThread.BeginInvokeOnMainThread(() =>
         {
             Categories.Clear();
-            Categories.Add(new Category { Id = 0, Name = "All", Icon = "🏷️", IsSelected = true });
+            
+            // Add "All" category
+            var allCategory = new Category { Id = 0, Name = "All", Icon = "🏷️", IsSelected = (selectedId == 0) };
+            Categories.Add(allCategory);
+
             if (cats != null)
             {
                 foreach (var c in cats)
                 {
-                    Categories.Add(new Category { Id = c.Id, Name = c.Name, Icon = "📂" });
+                    Categories.Add(new Category 
+                    { 
+                        Id = c.Id, 
+                        Name = c.Name, 
+                        Icon = "📂",
+                        IsSelected = (selectedId == c.Id)
+                    });
                 }
+            }
+
+            if (!Categories.Any(c => c.IsSelected))
+            {
+                allCategory.IsSelected = true;
             }
         });
 
+        // Fetch products based on the (preserved) category selection
         await FetchProductsAsync(reset: true);
 
         MainThread.BeginInvokeOnMainThread(() =>

@@ -4,10 +4,12 @@ namespace E_Commerce.Views;
 
 public partial class ProductDetailsPage : ContentPage
 {
-	public ProductDetailsPage(ProductDetailsViewModel viewModel)
-	{
-		InitializeComponent();
-		BindingContext = viewModel;
+    private readonly ProductDetailsViewModel _viewModel;
+
+    public ProductDetailsPage(ProductDetailsViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = _viewModel = viewModel;
 
         MessagingCenter.Subscribe<ProductDetailsViewModel>(this, "ItemAddedToCart", async (sender) =>
         {
@@ -32,5 +34,17 @@ public partial class ProductDetailsPage : ContentPage
                 CartPopup.IsVisible = false;
             });
         });
-	}
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.OnDisappearing();
+    }
 }

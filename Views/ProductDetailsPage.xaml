@@ -4,110 +4,279 @@
              xmlns:vm="clr-namespace:E_Commerce.ViewModels"
              x:Class="E_Commerce.Views.ProductDetailsPage"
              BackgroundColor="{StaticResource Background}"
-             Shell.NavBarIsVisible="True"
-             Title="Product Details">
+             Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="*, Auto">
 
-        <ScrollView Grid.Row="0">
+        <!-- Scrollable Page Content -->
+        <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
             <StackLayout Spacing="0">
 
-                <!-- ═══ Product Image ═══ -->
-                <Frame HeightRequest="380" CornerRadius="0" Padding="0" HasShadow="False"
-                       BackgroundColor="{StaticResource SecondaryBackground}">
+                <!-- ═══ Product Image Header ═══ -->
+                <Grid HeightRequest="380" BackgroundColor="{StaticResource SecondaryBackground}">
                     <Image Source="{Binding Product.Image}" Aspect="AspectFill" />
-                </Frame>
+                    
+                    <!-- Gradient overlay to improve contrast of the image and top bar -->
+                    <BoxView VerticalOptions="Start" HeightRequest="100">
+                        <BoxView.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#40000000" Offset="0.0" />
+                                <GradientStop Color="Transparent" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </BoxView.Background>
+                    </BoxView>
 
-                <!-- ═══ Product Info Card ═══ -->
-                <Frame Margin="0,-30,0,0" CornerRadius="30" Padding="0" HasShadow="True"
-                       BackgroundColor="{StaticResource CardBackground}" BorderColor="Transparent">
-                    <StackLayout Padding="24" Spacing="16">
+                    <!-- Floating Discount Tag or Badge -->
+                    <Frame BackgroundColor="{StaticResource Danger}" 
+                           HorizontalOptions="Start" 
+                           VerticalOptions="End" 
+                           Margin="24, 0, 0, 48" 
+                           CornerRadius="8"
+                           HasShadow="False"
+                           BorderColor="Transparent"
+                           Padding="10,4"
+                           IsVisible="{Binding Product.HasDiscount}">
+                        <Label Text="{Binding Product.DiscountPercent, StringFormat='{0} OFF'}" 
+                               TextColor="White" 
+                               FontSize="11" 
+                               FontAttributes="Bold" />
+                    </Frame>
+                </Grid>
 
-                        <!-- Name + Price row -->
-                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-                            <Label Text="{Binding Product.Name}" FontSize="22" FontAttributes="Bold"
-                                   TextColor="{StaticResource TextPrimary}" Grid.ColumnSpan="2" />
-                            <StackLayout Grid.Row="1" Orientation="Horizontal" Spacing="8">
-                                <Label Text="{Binding Product.Price, StringFormat='${0:F2}'}"
-                                       FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
-                                <Label Text="{Binding Product.OriginalPrice, StringFormat='${0:F2}'}"
-                                       FontSize="14" TextColor="{StaticResource TextLight}"
-                                       TextDecorations="Strikethrough" VerticalOptions="Center"
-                                       IsVisible="{Binding Product.HasDiscount}" />
-                            </StackLayout>
-                            <Frame Grid.Row="1" Grid.Column="1" CornerRadius="12" Padding="8,4"
-                                   HasShadow="False" BackgroundColor="{StaticResource Accent}"
-                                   VerticalOptions="Center" IsVisible="{Binding Product.HasDiscount}">
-                                <Label Text="{Binding Product.DiscountPercent}" FontSize="12"
-                                       FontAttributes="Bold" TextColor="White" />
+                <!-- ═══ Product Details Card ═══ -->
+                <Frame Margin="0,-30,0,0" 
+                       CornerRadius="30"
+                       HasShadow="True"
+                       BorderColor="Transparent"
+                       BackgroundColor="{StaticResource CardBackground}"
+                       Padding="0">
+                    
+                    <StackLayout Padding="24" Spacing="22">
+
+                        <!-- Category + Stock Status -->
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="{Binding Product.Category}" 
+                                   TextColor="{StaticResource Primary}" 
+                                   FontSize="12" 
+                                   FontAttributes="Bold" 
+                                   CharacterSpacing="1"
+                                   TextTransform="Uppercase" />
+
+                            <Frame Grid.Column="1" 
+                                   BackgroundColor="#E6F4EA" 
+                                   HasShadow="False"
+                                   CornerRadius="8" 
+                                   BorderColor="Transparent"
+                                   Padding="8,4"
+                                   HeightRequest="24"
+                                   VerticalOptions="Center">
+                                <StackLayout Orientation="Horizontal" Spacing="6" VerticalOptions="Center" HorizontalOptions="Center">
+                                    <Ellipse WidthRequest="6" HeightRequest="6" Fill="#137333" VerticalOptions="Center"/>
+                                    <Label Text="In Stock" TextColor="#137333" FontSize="11" FontAttributes="Bold" VerticalOptions="Center"/>
+                                </StackLayout>
                             </Frame>
                         </Grid>
 
-                        <!-- Rating -->
+                        <!-- Product Name -->
+                        <Label Text="{Binding Product.Name}" 
+                               FontSize="24" 
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}" 
+                               LineHeight="1.2" />
+
+                        <!-- Price Section -->
+                        <StackLayout Orientation="Horizontal" Spacing="12" VerticalOptions="Center">
+                            <Label Text="{Binding Product.Price, StringFormat='${0:F2}'}"
+                                   FontSize="28" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{StaticResource TextPrimary}" />
+                            
+                            <Label Text="{Binding Product.OriginalPrice, StringFormat='${0:F2}'}"
+                                   FontSize="16" 
+                                   TextColor="{StaticResource TextLight}"
+                                   TextDecorations="Strikethrough" 
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding Product.HasDiscount}" />
+                        </StackLayout>
+
+                        <!-- Rating & Reviews -->
                         <Frame CornerRadius="12" Padding="12,8" HasShadow="False"
                                BackgroundColor="{StaticResource SecondaryBackground}" HorizontalOptions="Start">
                             <StackLayout Orientation="Horizontal" Spacing="6">
-                                <Label Text="⭐" FontSize="16" VerticalOptions="Center" />
+                                <Label Text="⭐" FontSize="14" VerticalOptions="Center" />
                                 <Label Text="{Binding Product.Rating}" FontAttributes="Bold"
-                                       FontSize="15" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                                       FontSize="14" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
                                 <Label Text="{Binding Product.ReviewCount, StringFormat='({0} reviews)'}"
-                                       TextColor="{StaticResource TextSecondary}" FontSize="13" VerticalOptions="Center" />
+                                       TextColor="{StaticResource TextSecondary}" FontSize="12" VerticalOptions="Center" />
                             </StackLayout>
                         </Frame>
 
-                        <!-- Divider -->
-                        <BoxView HeightRequest="1" Color="{StaticResource Gray200}" Margin="0,4" />
+                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray200}" Margin="0,4" />
+
+                        <!-- Highlights Section -->
+                        <Label Text="Highlights" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                        <Grid ColumnDefinitions="*, *, *" ColumnSpacing="12">
+                            <!-- HighLight 1 -->
+                            <Frame Grid.Column="0" BackgroundColor="{StaticResource SecondaryBackground}" CornerRadius="12" HasShadow="False" BorderColor="Transparent" Padding="12">
+                                <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Label Text="🚚" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Text="Free Delivery" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </Frame>
+
+                            <!-- HighLight 2 -->
+                            <Frame Grid.Column="1" BackgroundColor="{StaticResource SecondaryBackground}" CornerRadius="12" HasShadow="False" BorderColor="Transparent" Padding="12">
+                                <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Label Text="🛡️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Text="1 Yr Warranty" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </Frame>
+
+                            <!-- HighLight 3 -->
+                            <Frame Grid.Column="2" BackgroundColor="{StaticResource SecondaryBackground}" CornerRadius="12" HasShadow="False" BorderColor="Transparent" Padding="12">
+                                <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Label Text="🔄" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Text="30-Day Return" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </Frame>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray200}" Margin="0,4" />
 
                         <!-- Description -->
-                        <Label Text="Description" FontSize="17" FontAttributes="Bold"
-                               TextColor="{StaticResource TextPrimary}" />
-                        <Label Text="{Binding Product.Description}" TextColor="{StaticResource TextSecondary}"
-                               FontSize="14" LineHeight="1.6" />
+                        <StackLayout Spacing="8">
+                            <Label Text="Description" FontSize="16" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label Text="{Binding Product.Description}" TextColor="{StaticResource TextSecondary}"
+                                   FontSize="14" LineHeight="1.5" />
+                        </StackLayout>
 
-                        <!-- Divider -->
-                        <BoxView HeightRequest="1" Color="{StaticResource Gray200}" Margin="0,4" />
+                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray200}" Margin="0,4" />
 
-                        <!-- Quantity Picker -->
-                        <Label Text="Quantity" FontSize="17" FontAttributes="Bold"
-                               TextColor="{StaticResource TextPrimary}" />
-                        <Frame CornerRadius="14" Padding="4" HasShadow="False"
-                               BackgroundColor="{StaticResource SecondaryBackground}"
-                               HorizontalOptions="Start">
-                            <StackLayout Orientation="Horizontal" Spacing="0">
-                                <Button Text="−" WidthRequest="44" HeightRequest="44"
-                                        CornerRadius="12" BackgroundColor="{StaticResource CardBackground}"
-                                        TextColor="{StaticResource TextPrimary}" FontSize="20" FontAttributes="Bold"
-                                        Command="{Binding DecreaseQuantityCommand}" />
-                                <Label Text="{Binding Quantity}" FontSize="18" FontAttributes="Bold"
-                                       TextColor="{StaticResource TextPrimary}"
-                                       WidthRequest="50" HorizontalTextAlignment="Center"
-                                       VerticalOptions="Center" />
-                                <Button Text="+" WidthRequest="44" HeightRequest="44"
-                                        CornerRadius="12" BackgroundColor="{StaticResource Primary}"
-                                        TextColor="White" FontSize="20" FontAttributes="Bold"
-                                        Command="{Binding IncreaseQuantityCommand}" />
-                            </StackLayout>
-                        </Frame>
+                        <!-- Specifications Grid -->
+                        <StackLayout Spacing="10">
+                            <Label Text="Specifications" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                            
+                            <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="100, *" RowSpacing="12" ColumnSpacing="20">
+                                <Label Grid.Row="0" Grid.Column="0" Text="Category" TextColor="{StaticResource TextSecondary}" FontSize="13" VerticalOptions="Center" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Product.Category}" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" FontSize="13" VerticalOptions="Center" />
+
+                                <Label Grid.Row="1" Grid.Column="0" Text="Condition" TextColor="{StaticResource TextSecondary}" FontSize="13" VerticalOptions="Center" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="Brand New" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" FontSize="13" VerticalOptions="Center" />
+
+                                <Label Grid.Row="2" Grid.Column="0" Text="Delivery" TextColor="{StaticResource TextSecondary}" FontSize="13" VerticalOptions="Center" />
+                                <Label Grid.Row="2" Grid.Column="1" Text="Standard (Free, 2-4 days)" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" FontSize="13" VerticalOptions="Center" />
+                            </Grid>
+                        </StackLayout>
+
+                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray200}" Margin="0,4" />
+
+                        <!-- Quantity Selector -->
+                        <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                            <Label Text="Select Quantity" FontSize="16" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                            
+                            <Frame Grid.Column="1" CornerRadius="16" HasShadow="False" BorderColor="Transparent"
+                                   BackgroundColor="{StaticResource SecondaryBackground}" Padding="4" HeightRequest="44" VerticalOptions="Center">
+                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                    <Button Text="−" WidthRequest="36" HeightRequest="36"
+                                            CornerRadius="12" BackgroundColor="{StaticResource CardBackground}"
+                                            TextColor="{StaticResource TextPrimary}" FontSize="16" FontAttributes="Bold"
+                                            Command="{Binding DecreaseQuantityCommand}" Padding="0" />
+                                    <Label Text="{Binding Quantity}" FontSize="16" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           WidthRequest="40" HorizontalTextAlignment="Center"
+                                           VerticalOptions="Center" />
+                                    <Button Text="+" WidthRequest="36" HeightRequest="36"
+                                            CornerRadius="12" BackgroundColor="{StaticResource Primary}"
+                                            TextColor="White" FontSize="16" FontAttributes="Bold"
+                                            Command="{Binding IncreaseQuantityCommand}" Padding="0" />
+                                </StackLayout>
+                            </Frame>
+                        </Grid>
 
                     </StackLayout>
                 </Frame>
             </StackLayout>
         </ScrollView>
 
-        <!-- ═══ Bottom Action Bar ═══ -->
-        <Frame Grid.Row="1" Padding="20,16" BackgroundColor="{StaticResource CardBackground}"
-               HasShadow="True" BorderColor="Transparent" CornerRadius="0">
-            <Grid ColumnDefinitions="Auto, *" ColumnSpacing="16">
-                <Frame CornerRadius="16" Padding="0" WidthRequest="56" HeightRequest="56"
-                       HasShadow="False" BackgroundColor="{StaticResource SecondaryBackground}"
-                       BorderColor="{StaticResource Gray200}">
-                    <Label Text="♡" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center"
-                           TextColor="{StaticResource TextPrimary}" />
+        <!-- ═══ Floating Pinned Header (Back + Actions) ═══ -->
+        <Grid Grid.Row="0" VerticalOptions="Start" HeightRequest="80" Padding="20,12" ColumnDefinitions="Auto, *, Auto" InputTransparent="False">
+            <!-- Back Button -->
+            <Frame Grid.Column="0" CornerRadius="22" WidthRequest="44" HeightRequest="44" Padding="0" HasShadow="True" BackgroundColor="{StaticResource CardBackground}" BorderColor="Transparent">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Frame.GestureRecognizers>
+                <Label Text="←" TextColor="{StaticResource TextPrimary}" FontSize="20" FontAttributes="Bold"
+                       HorizontalOptions="Center" VerticalOptions="Center" Margin="0,-2,0,0" />
+            </Frame>
+
+            <!-- Actions (Favorite + Cart) -->
+            <StackLayout Grid.Column="2" Orientation="Horizontal" Spacing="10">
+                <!-- Favorite Button -->
+                <Frame CornerRadius="22" WidthRequest="44" HeightRequest="44" Padding="0" HasShadow="True" BackgroundColor="{StaticResource CardBackground}" BorderColor="Transparent">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleFavoriteCommand}" />
+                    </Frame.GestureRecognizers>
+                    <Label Text="♡" TextColor="{StaticResource TextPrimary}" FontSize="20"
+                           HorizontalOptions="Center" VerticalOptions="Center" Margin="0,1,0,0">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsFavorite}" Value="True">
+                                <Setter Property="Text" Value="♥" />
+                                <Setter Property="TextColor" Value="{StaticResource Danger}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
                 </Frame>
-                <Button Grid.Column="1" Text="Add to Cart  🛒"
+
+                <!-- Cart Button with Badge -->
+                <Grid WidthRequest="44" HeightRequest="44">
+                    <!-- Base button circular frame -->
+                    <Frame CornerRadius="22" Padding="0" HasShadow="True" BackgroundColor="{StaticResource CardBackground}" BorderColor="Transparent">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateToCartCommand}" />
+                        </Frame.GestureRecognizers>
+                        <Label Text="🛒" TextColor="{StaticResource TextPrimary}" FontSize="18"
+                               HorizontalOptions="Center" VerticalOptions="Center" Margin="0,0,0,0" />
+                    </Frame>
+
+                    <!-- Red circular badge count -->
+                    <Frame BackgroundColor="{StaticResource Danger}"
+                           CornerRadius="9"
+                           WidthRequest="18"
+                           HeightRequest="18"
+                           Padding="0"
+                           HasShadow="False"
+                           BorderColor="Transparent"
+                           HorizontalOptions="End"
+                           VerticalOptions="Start"
+                           Margin="0,-4,-4,0"
+                           IsVisible="{Binding HasCartItems}">
+                        <Label Text="{Binding CartItemsCount}"
+                               TextColor="White"
+                               FontSize="10"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Frame>
+                </Grid>
+            </StackLayout>
+        </Grid>
+
+        <!-- ═══ Bottom Action Bar ═══ -->
+        <Frame Grid.Row="1" Padding="24,16" BackgroundColor="{StaticResource CardBackground}" HasShadow="True" BorderColor="Transparent" CornerRadius="0">
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="20">
+                <!-- Total Price display -->
+                <StackLayout Grid.Column="0" VerticalOptions="Center" Spacing="2">
+                    <Label Text="Total Price" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+                    <Label Text="{Binding TotalPrice, StringFormat='${0:F2}'}" FontSize="22" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                </StackLayout>
+
+                <!-- Add/Go to Cart CTA -->
+                <Button Grid.Column="1" Text="{Binding CartButtonText}"
                         BackgroundColor="{StaticResource Primary}"
-                        TextColor="White" FontAttributes="Bold" FontSize="16"
-                        CornerRadius="16" HeightRequest="56"
+                        TextColor="White" FontAttributes="Bold" FontSize="15"
+                        CornerRadius="16" HeightRequest="54"
                         Command="{Binding AddToCartCommand}" />
             </Grid>
         </Frame>
